@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Recommender System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital@0;1&family=Montserrat:ital,wght@0,500;1,500&family=Open+Sans:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+</head>
+    <style>
+        @media (max-width: 767px) {
+    /* Adjust as needed */
+    .align-items-center .col {
+        text-align: center;
+    }
+    .align-items-center .col-auto {
+        margin-top: 10px; /* Adjust the margin as needed */
+    }
+}
+        body{
+    font-family: "Montserrat", sans-serif;
+    }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            z-index: 1000;
+            border:2px solid blue;
+            border-radius:50%;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+body {
+  background: #E3F2FD;
+}
+.chatbot-toggler {
+  position: fixed;
+  bottom: 30px;
+  right: 100px;
+  outline: none;
+  border: none;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #E72929;
+  transition: all 0.2s ease;
+}
+body.show-chatbot .chatbot-toggler {
+  transform: rotate(90deg);
+}
+.chatbot-toggler span {
+  color: #fff;
+  position: absolute;
+}
+.chatbot-toggler span:last-child,
+body.show-chatbot .chatbot-toggler span:first-child  {
+  opacity: 0;
+}
+body.show-chatbot .chatbot-toggler span:last-child {
+  opacity: 1;
+}
+.chatbot {
+  position: fixed;
+  right: 35px;
+  top:80px;
+  bottom: 90px;
+  width: 420px;
+  background: #111;
+  border-radius: 15px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.5);
+  transform-origin: bottom right;
+  box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
+              0 32px 64px -48px rgba(0,0,0,0.5);
+  transition: all 0.1s ease;
+}
+body.show-chatbot .chatbot {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+.chatbot header {
+  padding: 16px 0;
+  position: relative;
+  text-align: center;
+  color: #fff;
+  background: #4CCD99;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.chatbot header span {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  display: none;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+header h2 {
+  font-size: 1.4rem;
+}
+.chatbot .chatbox {
+  overflow-y: auto;
+  height: 510px;
+  padding: 30px 20px 100px;
+}
+.chatbot :where(.chatbox, textarea)::-webkit-scrollbar {
+  width: 6px;
+}
+.chatbot :where(.chatbox, textarea)::-webkit-scrollbar-track {
+  background: #fff;
+  border-radius: 25px;
+}
+.chatbot :where(.chatbox, textarea)::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 25px;
+}
+.chatbox .chat {
+  display: flex;
+  list-style: none;
+}
+.chatbox .outgoing {
+  margin: 20px 0;
+  justify-content: flex-end;
+}
+.chatbox .incoming span {
+  width: 32px;
+  height: 32px;
+  color: #fff;
+  cursor: default;
+  text-align: center;
+  line-height: 32px;
+  align-self: flex-end;
+  background: #724ae8;
+  border-radius: 4px;
+  margin: 0 10px 7px 0;
+}
+.chatbox .chat p {
+  white-space: pre-wrap;
+  padding: 12px 16px;
+  border-radius: 10px 10px 0 10px;
+  max-width: 75%;
+  color: #fff;
+  font-size: 0.95rem;
+  background: #724ae8;
+}
+.chatbox .incoming p {
+  border-radius: 10px 10px 10px 0;
+}
+.chatbox .chat p.error {
+  color: #721c24;
+  background: #f8d7da;
+}
+.chatbox .incoming p {
+  color: #000;
+  background: #f2f2f2;
+}
+.chatbot .chat-input {
+  display: flex;
+  gap: 5px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+  padding: 3px 20px;
+  border-top: 1px solid #ddd;
+}
+.chat-input textarea {
+  height: 55px;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  max-height: 180px;
+  padding: 15px 15px 15px 0;
+  font-size: 0.95rem;
+}
+.chat-input span {
+  align-self: flex-end;
+  color: #724ae8;
+  cursor: pointer;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  visibility: hidden;
+  font-size: 1.35rem;
+}
+.chat-input textarea:valid ~ span {
+  visibility: visible;
+}
+@media (max-width: 490px) {
+  .chatbot-toggler {
+    right: 90px;
+    bottom: 20px;
+  }
+  .chatbot {
+    right: 0;
+    bottom: 0;
+    height: 80%;
+    border-radius: 0;
+    width: 100%;
+  }
+  .chatbot .chatbox {
+    height: 90%;
+    padding: 25px 15px 100px;
+  }
+  .chatbot .chat-input {
+    padding: 5px 15px;
+  }
+  .chatbot header span {
+    display: block;
+  }
+}
+    </style>
+
+<body class="bg-dark">
+    <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
+    <div class="container-fluid">
+      <svg xmlns="http://www.w3.org/2000/svg" height="30" fill="white" class="bi bi-shop" viewBox="0 0 16 16" style="margin-right:20px !important">
+  <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.37 2.37 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0M1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5M4 15h3v-5H4zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm3 0h-2v3h2z"/>
+</svg>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/profile">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Explore</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/recommend">Recommend</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/favorites">Favorites</a>
+                </li>
+            </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-light" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+
+    <div class="px-4 pt-5 my-3 text-center" style="margin-top:4rem !important;">
+        <h1 class="display-4 fw-bold  text-white">Restaurant Recommender System</h1>
+    </div>
+
+    <div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6"> <!-- Adjust column width as needed -->
+            <form action="/recommend_restaurant" method="post" class="row g-3 align-items-center text-center">
+                <!-- Add the "text-center" class to center the form content -->
+                <div class="col">
+                    <input name="user_input" type="text" class="form-control form-control-lg" id="name" placeholder="Search Restaurants">
+                    <!-- Add "form-control-lg" class to make the input text larger -->
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary btn-lg">Search</button>
+                    <!-- Add "btn-lg" class to make the button text larger -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    {% if data %}
+    <div class="container mt-5">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            {% for i in data %}
+            <div class="col-md-6 col-lg-3 mb-2">
+                <div class="card h-100 border border-white">
+                    <img src="{{ i[2] }}" class="card-img-top" alt="Restaurant Image">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Name : {{ i[0] }}</li>
+                        <li class="list-group-item">Location : {{ i[1] }}</li>
+                        <li class="list-group-item">Cost : {{ i[3] }}</li>
+                        <li class="list-group-item">Rating : {{ i[4] }}</li>
+                    </ul>
+                    <div class="card-body">
+                        <a href="{{ i[5] }}" class="btn btn-outline-primary">Visit</a>
+                        <button class="btn btn-outline-success add-to-favorites">Add to Favorites</button> <!-- Add this button -->
+                        <div class="rating mt-2" style="cursor: pointer;" data-name="{{ i[0] }}">
+                            <span class="star" style="font-size: 2em;" data-rating="1" data-name="{{ i[0] }}">&#9733;</span>
+                            <span class="star" style="font-size: 2em;" data-rating="2" data-name="{{ i[0] }}">&#9733;</span>
+                            <span class="star" style="font-size: 2em;" data-rating="3" data-name="{{ i[0] }}">&#9733;</span>
+                            <span class="star" style="font-size: 2em;" data-rating="4" data-name="{{ i[0] }}">&#9733;</span>
+                            <span class="star" style="font-size: 2em;" data-rating="5" data-name="{{ i[0] }}">&#9733;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if message %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="text-center">
+                    <h4 class="text-white">{{ message }}</h4>
+                    <h4 class="text-white">{{ explore_message }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Display recommendations -->
+    {% if recommendations %}
+    <div class="container mt-5">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            {% for i in recommendations %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border border-white">
+                    <img src="{{ i[2] }}" class="card-img-top" alt="Restaurant Image">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Name : {{ i[0] }}</li>
+                        <li class="list-group-item">Location : {{ i[1] }}</li>
+                        <li class="list-group-item">Cost : {{ i[3] }}</li>
+                        <li class="list-group-item">Rating : {{ i[4] }}</li>
+                    </ul>
+                    <div class="card-body">
+                        <a href="{{ i[5] }}" class="btn btn-outline-primary">Visit</a>
+                        <button class="btn btn-outline-success add-to-favorites">Add to Favorites</button> <!-- Add this button -->
+                        <div class="rating mt-2" style="cursor: pointer;" data-name="{{ i[0] }}">
+                            <span class="star" style="font-size: 2em;" data-rating="1" data-name="{{ i[0] }}">&#9733;</span>
+                            <span class="star" style="font-size: 2em;" data-rating="2" data-name="{{ i[0] }}">&#9733;</span>
+                            <span class="star" style="font-size: 2em;" data-rating="3" data-name="{{ i[0] }}">&#9733;</span>
+                            <span class="star" style="font-size: 2em;" data-rating="4" data-name="{{ i[0] }}">&#9733;</span>
+                            <span class="star" style="font-size: 2em;" data-rating="5" data-name="{{ i[0] }}">&#9733;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% for restaurant_info in data %}
+    <div>
+        <p>{{ restaurant_info[0] }}</p>  <!-- Restaurant name -->
+        <p>{{ restaurant_info[1] }}</p>  <!-- Location -->
+        <img src="{{ restaurant_info[2] }}" alt="Restaurant Image">  <!-- Image -->
+        <p>Cost: {{ restaurant_info[3] }}</p>
+        <p>Rating: {{ restaurant_info[4] }}</p>
+        <a href="{{ restaurant_info[5] }}">Link</a>  <!-- URL -->
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="container mt-5">
+        <div class="row justify-content-center pb-5">
+            <div class="col-md-8 text-center text-white">
+                <!-- Make the regression plot responsive -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    {% if regression_plot %}
+                    <img src="data:image/png;base64,{{ regression_plot }}" class="embed-responsive-item" style="max-width: 100%;" alt="Regression Plot">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center pb-5">
+            <div class="col-md-8 text-center text-white">
+                <!-- Make the regression plot responsive -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    {% if bar_plot %}
+                    <img src="data:image/png;base64,{{ bar_plot }}" class="embed-responsive-item" style="max-width: 100%;" alt="Bar Regression Graph">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary scroll-to-top" onclick="scrollToTop()" id="scrollToTopBtn"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>
+</svg></button>
+
+    <button class="chatbot-toggler">
+      <span class="material-symbols-rounded">mode_comment</span>
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <div class="chatbot">
+      <header>
+        <h2>Restaurant ChatBot</h2>
+        <span class="close-btn material-symbols-outlined">close</span>
+      </header>
+      <ul class="chatbox">
+        <li class="chat incoming">
+          <span class="material-symbols-outlined">smart_toy</span>
+          <p>Hi there 👋<br>How can I help you today?</p>
+        </li>
+      </ul>
+      <div class="chat-input">
+        <textarea placeholder="Enter a message..." spellcheck="false" required></textarea>
+        <span id="send-btn" class="material-symbols-rounded">send</span>
+      </div>
+    </div>
+
+<script>
+        // Function to scroll to the top of the page smoothly
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        // Function to toggle visibility of scroll-to-top button based on scroll position
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollToTopBtn.style.display = "block";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const stars = document.querySelectorAll('.star');
+
+            stars.forEach(star => {
+                star.addEventListener('click', (e) => {
+                    const rating = parseInt(e.target.getAttribute('data-rating'));
+                    const restaurantName = e.target.getAttribute('data-name');
+                    updateRating(restaurantName, rating);
+                    markStars(restaurantName, rating);
+                });
+            });
+
+            function updateRating(restaurantName, rating) {
+                fetch('/update_rating', {
+                    method: 'POST',
+                    body: JSON.stringify({name: restaurantName, rating: rating}),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+            }
+
+            function markStars(restaurantName, rating) {
+                const stars = document.querySelectorAll(`.rating[data-name="${restaurantName}"] .star`);
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('text-warning');
+                    } else {
+                        star.classList.remove('text-warning');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://cdn.skypack.dev/@google/generative-ai";
+
+const chatbotToggler = document.querySelector(".chatbot-toggler");
+const closeBtn = document.querySelector(".close-btn");
+const chatbox = document.querySelector(".chatbox");
+const chatInput = document.querySelector(".chat-input textarea");
+const sendChatBtn = document.querySelector(".chat-input span");
+
+let userMessage = null;
+const inputInitHeight = chatInput.scrollHeight;
+
+const API_KEY = "AIzaSyBHsjLt46ecm6zXhTmMbbqtvfvFbdUTPGs"; // Replace "YOUR_API_KEY" with your actual API key
+const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+
+const createChatLi = (message, className) => {
+    const chatLi = document.createElement("li");
+    chatLi.classList.add("chat", className);
+    let chatContent = className === "outgoing" ? '<p></p>' : '<span class="material-symbols-outlined">smart_toy</span><p></p>';
+    chatLi.innerHTML = chatContent;
+    chatLi.querySelector("p").textContent = message;
+    return chatLi;
+}
+
+const generateResponse = async (userMessage) => {
+    const result = await model.generateContent(userMessage);
+    const response = await result.response;
+    const text = await response.text();
+    return text;
+}
+
+const handleChat = async () => {
+    userMessage = chatInput.value.trim();
+    if (!userMessage) return;
+
+    // Clear the input textarea and set its height to default
+    chatInput.value = "";
+    chatInput.style.height = `${inputInitHeight}px`;
+
+
+    // Append the user's message to the chatbox
+    chatbox.appendChild(createChatLi(userMessage, "outgoing"));
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+
+    try {
+        // Display "Thinking..." message while waiting for the response
+        const incomingChatLi = createChatLi("Thinking...", "incoming");
+        chatbox.appendChild(incomingChatLi);
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+
+        const botResponse = await generateResponse(userMessage);
+        incomingChatLi.innerHTML = `<p>${botResponse}</p>`;
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+    } catch (error) {
+        console.error("Error generating response:", error);
+    }
+
+}
+
+
+chatInput.addEventListener("input", () => {
+    // Adjust the height of the input textarea based on its content
+    chatInput.style.height = `${inputInitHeight}px`;
+    chatInput.style.height = `${chatInput.scrollHeight}px`;
+});
+
+chatInput.addEventListener("keydown", (e) => {
+    // If Enter key is pressed without Shift key and the window
+    // width is greater than 800px, handle the chat
+    if (e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
+        e.preventDefault();
+        handleChat();
+    }
+});
+
+sendChatBtn.addEventListener("click", handleChat);
+closeBtn.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
+chatbotToggler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
+    </script>
+
+    <script>
+    // Add event listener when the DOM content is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select all elements with the class "add-to-favorites"
+        const addToFavoritesButtons = document.querySelectorAll('.add-to-favorites');
+
+        // Loop through each button and attach a click event listener
+        addToFavoritesButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                // Prevent the default form submission behavior
+                event.preventDefault();
+
+                // Extract restaurant information from the parent card element
+                const card = this.closest('.card');
+                const name = card.querySelector('.list-group-item:nth-child(1)').textContent.split(':')[1].trim();
+                const location = card.querySelector('.list-group-item:nth-child(2)').textContent.split(':')[1].trim();
+                const cost = card.querySelector('.list-group-item:nth-child(3)').textContent.split(':')[1].trim();
+                const rating = card.querySelector('.list-group-item:nth-child(4)').textContent.split(':')[1].trim();
+                const imageUrl = card.querySelector('.card-img-top').src;
+                const visitUrl = card.querySelector('.btn-outline-primary').href;
+
+                // Construct an object with the extracted information
+                const restaurantInfo = {
+                    name: name,
+                    location: location,
+                    cost: cost,
+                    rating: rating,
+                    imageUrl: imageUrl,
+                    visitUrl: visitUrl
+                };
+
+                // Get existing favorites from local storage or initialize to an empty array
+                let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+                // Check if the restaurant is already in favorites
+                const isAlreadyFavorite = favorites.some(favorite => favorite.name === restaurantInfo.name);
+
+                if (!isAlreadyFavorite) {
+                    // Add the restaurant to favorites
+                    favorites.push(restaurantInfo);
+                    // Store favorites in local storage
+                    localStorage.setItem('favorites', JSON.stringify(favorites));
+                    // Alert user
+                    alert('Restaurant added to favorites!');
+                } else {
+                    // Alert user that restaurant is already in favorites
+                    alert('Restaurant is already in favorites!');
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
