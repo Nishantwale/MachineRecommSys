@@ -1,3 +1,5 @@
-I've developed an advanced Recommender System project deployed on Heroku, integrating Flask, HTML, CSS, and Bootstrap. It features user registration with face recognition using Python's face_recognition library for secure authentication. The project includes a dynamic index page with project details, a contact form for direct communication, and a feedback section showcasing user reviews. The signup process involves capturing images for encrypted storage in an SQLite database, ensuring robust user verification.
-
-Post-login, users access a personalized home page displaying profile details and navigate through sections like Explore, which lists top restaurants based on Zomato data, utilizing Jupyter Notebook for data preprocessing. The Recommend section uses content-based filtering to suggest restaurants based on user preferences, with options to add favorites and provide ratings. The project highlights my expertise in unsupervised machine learning and web development, delivering a seamless user experience through intuitive design and interactive features.
+#### Restaurant Recommendation System
+## Overview
+    This project is an advanced Restaurant Recommendation System deployed on Heroku, designed to enhance user experience through personalized recommendations and interactive features. It leverages Flask for backend 
+    functionality and integrates HTML, CSS, and Bootstrap for the frontend. The system utilizes machine learning algorithms for providing recommendations and incorporates face recognition for secure user 
+    authentication.
